@@ -444,6 +444,229 @@ const swaggerDefinition = {
           },
         },
       },
+      // Team schemas
+      Team: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            format: 'uuid',
+            description: 'Team ID',
+            example: '123e4567-e89b-12d3-a456-426614174000',
+          },
+          name: {
+            type: 'string',
+            description: 'Team name',
+            example: 'Sales Team',
+          },
+          teamType: {
+            type: 'string',
+            enum: ['Corretores', 'Cadastro', 'Jurídico', 'Atendimento', 'Administrativo'],
+            description: 'Team type',
+            example: 'Corretores',
+          },
+          createdAt: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Creation date',
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Last update date',
+          },
+          members: {
+            type: 'array',
+            description: 'List of members in the team',
+            items: {
+              $ref: '#/components/schemas/Member',
+            },
+          },
+        },
+      },
+      CreateTeam: {
+        type: 'object',
+        required: ['name', 'teamType'],
+        properties: {
+          name: {
+            type: 'string',
+            description: 'Team name',
+            example: 'Sales Team',
+          },
+          teamType: {
+            type: 'string',
+            enum: ['Corretores', 'Cadastro', 'Jurídico', 'Atendimento', 'Administrativo'],
+            description: 'Team type',
+            example: 'Corretores',
+          },
+        },
+      },
+      UpdateTeam: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string',
+            description: 'Team name',
+            example: 'Sales Team',
+          },
+          teamType: {
+            type: 'string',
+            enum: ['Corretores', 'Cadastro', 'Jurídico', 'Atendimento', 'Administrativo'],
+            description: 'Team type',
+            example: 'Corretores',
+          },
+        },
+      },
+      SetLeader: {
+        type: 'object',
+        required: ['member_id'],
+        properties: {
+          member_id: {
+            type: 'string',
+            format: 'uuid',
+            description: 'Member ID to set as leader',
+            example: '123e4567-e89b-12d3-a456-426614174000',
+          },
+        },
+      },
+      // Member schemas
+      Member: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            format: 'uuid',
+            description: 'Member ID',
+            example: '123e4567-e89b-12d3-a456-426614174000',
+          },
+          name: {
+            type: 'string',
+            description: 'Member name',
+            example: 'John Doe',
+          },
+          email: {
+            type: 'string',
+            format: 'email',
+            description: 'Member email',
+            example: 'john.doe@example.com',
+          },
+          phone: {
+            type: 'string',
+            description: 'Member phone',
+            example: '+1234567890',
+          },
+          isLeader: {
+            type: 'boolean',
+            description: 'Whether the member is a leader',
+            example: false,
+          },
+          teamId: {
+            type: 'string',
+            format: 'uuid',
+            description: 'Team ID',
+            example: '123e4567-e89b-12d3-a456-426614174000',
+          },
+          joinedAt: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Date when the member joined the team',
+          },
+          active: {
+            type: 'boolean',
+            description: 'Whether the member is active',
+            example: true,
+          },
+          createdAt: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Creation date',
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Last update date',
+          },
+          team: {
+            $ref: '#/components/schemas/Team',
+          },
+        },
+      },
+      CreateMember: {
+        type: 'object',
+        required: ['name', 'email', 'phone', 'teamId'],
+        properties: {
+          name: {
+            type: 'string',
+            description: 'Member name',
+            example: 'John Doe',
+          },
+          email: {
+            type: 'string',
+            format: 'email',
+            description: 'Member email',
+            example: 'john.doe@example.com',
+          },
+          phone: {
+            type: 'string',
+            description: 'Member phone',
+            example: '+1234567890',
+          },
+          isLeader: {
+            type: 'boolean',
+            description: 'Whether the member is a leader',
+            example: false,
+          },
+          teamId: {
+            type: 'string',
+            format: 'uuid',
+            description: 'Team ID',
+            example: '123e4567-e89b-12d3-a456-426614174000',
+          },
+        },
+      },
+      UpdateMember: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string',
+            description: 'Member name',
+            example: 'John Doe',
+          },
+          email: {
+            type: 'string',
+            format: 'email',
+            description: 'Member email',
+            example: 'john.doe@example.com',
+          },
+          phone: {
+            type: 'string',
+            description: 'Member phone',
+            example: '+1234567890',
+          },
+          isLeader: {
+            type: 'boolean',
+            description: 'Whether the member is a leader',
+            example: false,
+          },
+          teamId: {
+            type: 'string',
+            format: 'uuid',
+            description: 'Team ID',
+            example: '123e4567-e89b-12d3-a456-426614174000',
+          },
+        },
+      },
+      UpdateMemberStatus: {
+        type: 'object',
+        required: ['active'],
+        properties: {
+          active: {
+            type: 'boolean',
+            description: 'Whether the member is active',
+            example: true,
+          },
+        },
+      },
     },
     responses: {
       UnauthorizedError: {
@@ -567,8 +790,11 @@ const swaggerDefinition = {
 const options = {
   swaggerDefinition,
   // Paths to files containing OpenAPI definitions
-  apis: ['./src/routes/*.ts'],
+  apis: [__dirname + '/../routes/*.ts'],
 };
+
+// Log the paths being scanned for OpenAPI definitions
+console.log('Scanning for OpenAPI definitions in:', options.apis);
 
 // Initialize swagger-jsdoc
 const swaggerSpec = swaggerJSDoc(options);

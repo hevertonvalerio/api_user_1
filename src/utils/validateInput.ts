@@ -1,6 +1,9 @@
 import { body, param, query, ValidationChain } from 'express-validator';
 import { regionRepository } from '../repositories/RegionRepository';
 import { neighborhoodRepository } from '../repositories/NeighborhoodRepository';
+import { teamRepository } from '../repositories/TeamRepository';
+import { memberRepository } from '../repositories/MemberRepository';
+import { teamTypeEnum } from '../db/schema';
 
 /**
  * Validation rules for creating a user
@@ -325,4 +328,166 @@ export const addRegionNeighborhoodsValidation: ValidationChain[] = [
       
       return true;
     }),
+];
+
+/**
+ * Validation rules for creating a team
+ */
+export const createTeamValidation: ValidationChain[] = [
+  body('name')
+    .notEmpty()
+    .withMessage('Name is required')
+    .isString()
+    .withMessage('Name must be a string')
+    .isLength({ max: 100 })
+    .withMessage('Name must be at most 100 characters'),
+  
+  body('teamType')
+    .notEmpty()
+    .withMessage('Team type is required')
+    .isString()
+    .withMessage('Team type must be a string')
+    .isIn(teamTypeEnum.enumValues)
+    .withMessage(`Team type must be one of: ${teamTypeEnum.enumValues.join(', ')}`),
+];
+
+/**
+ * Validation rules for updating a team
+ */
+export const updateTeamValidation: ValidationChain[] = [
+  param('id')
+    .notEmpty()
+    .withMessage('Team ID is required')
+    .isUUID()
+    .withMessage('Invalid team ID format'),
+  
+  body('name')
+    .optional()
+    .isString()
+    .withMessage('Name must be a string')
+    .isLength({ max: 100 })
+    .withMessage('Name must be at most 100 characters'),
+  
+  body('teamType')
+    .optional()
+    .isString()
+    .withMessage('Team type must be a string')
+    .isIn(teamTypeEnum.enumValues)
+    .withMessage(`Team type must be one of: ${teamTypeEnum.enumValues.join(', ')}`),
+];
+
+/**
+ * Validation rules for setting a team leader
+ */
+export const setTeamLeaderValidation: ValidationChain[] = [
+  param('id')
+    .notEmpty()
+    .withMessage('Team ID is required')
+    .isUUID()
+    .withMessage('Invalid team ID format'),
+  
+  body('member_id')
+    .notEmpty()
+    .withMessage('Member ID is required')
+    .isUUID()
+    .withMessage('Invalid member ID format'),
+];
+
+/**
+ * Validation rules for creating a member
+ */
+export const createMemberValidation: ValidationChain[] = [
+  body('name')
+    .notEmpty()
+    .withMessage('Name is required')
+    .isString()
+    .withMessage('Name must be a string')
+    .isLength({ max: 100 })
+    .withMessage('Name must be at most 100 characters'),
+  
+  body('email')
+    .notEmpty()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Invalid email format')
+    .isLength({ max: 100 })
+    .withMessage('Email must be at most 100 characters'),
+  
+  body('phone')
+    .notEmpty()
+    .withMessage('Phone is required')
+    .isString()
+    .withMessage('Phone must be a string')
+    .isLength({ max: 20 })
+    .withMessage('Phone must be at most 20 characters'),
+  
+  body('isLeader')
+    .optional()
+    .isBoolean()
+    .withMessage('isLeader must be a boolean'),
+  
+  body('teamId')
+    .notEmpty()
+    .withMessage('Team ID is required')
+    .isUUID()
+    .withMessage('Invalid team ID format'),
+];
+
+/**
+ * Validation rules for updating a member
+ */
+export const updateMemberValidation: ValidationChain[] = [
+  param('id')
+    .notEmpty()
+    .withMessage('Member ID is required')
+    .isUUID()
+    .withMessage('Invalid member ID format'),
+  
+  body('name')
+    .optional()
+    .isString()
+    .withMessage('Name must be a string')
+    .isLength({ max: 100 })
+    .withMessage('Name must be at most 100 characters'),
+  
+  body('email')
+    .optional()
+    .isEmail()
+    .withMessage('Invalid email format')
+    .isLength({ max: 100 })
+    .withMessage('Email must be at most 100 characters'),
+  
+  body('phone')
+    .optional()
+    .isString()
+    .withMessage('Phone must be a string')
+    .isLength({ max: 20 })
+    .withMessage('Phone must be at most 20 characters'),
+  
+  body('isLeader')
+    .optional()
+    .isBoolean()
+    .withMessage('isLeader must be a boolean'),
+  
+  body('teamId')
+    .optional()
+    .isUUID()
+    .withMessage('Invalid team ID format'),
+];
+
+/**
+ * Validation rules for updating a member's status
+ */
+export const updateMemberStatusValidation: ValidationChain[] = [
+  param('id')
+    .notEmpty()
+    .withMessage('Member ID is required')
+    .isUUID()
+    .withMessage('Invalid member ID format'),
+  
+  body('active')
+    .notEmpty()
+    .withMessage('Active status is required')
+    .isBoolean()
+    .withMessage('Active status must be a boolean'),
 ];
