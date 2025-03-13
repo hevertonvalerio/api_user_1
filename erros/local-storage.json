@@ -1,0 +1,6 @@
+{
+  "drizzle-version": "3.0.0",
+  "drizzle-db-36c51f340f5d03ff5ab96a50070bce200283abf92f4ce1276da89c4d30b3c1f0": "{\"state\":{\"currentPage\":\"main\",\"filterViews\":{},\"isSidebarOpen\":true,\"isShowSidebarContent\":true,\"filtersVisible\":false,\"sidebarWidth\":268,\"currentSchemaName\":null,\"currentTable\":null},\"version\":1}",
+  "drizzle-global": "{\"state\":{\"showCounts\":true,\"flatSchemas\":false,\"dataFormats\":null,\"expandSubviews\":false,\"paginationType\":\"limit-offset\"},\"version\":0}",
+  "drizzle-custom-theme-ids": "[]"
+}

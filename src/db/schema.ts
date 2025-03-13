@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp, boolean, integer, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, boolean, integer, pgEnum, uniqueIndex } from 'drizzle-orm/pg-core';
 
 // Define user types enum
 export const userTypeEnum = pgEnum('user_type', ['Admin', 'Gerente', 'Corretor', 'Usuário']);
@@ -23,8 +23,43 @@ export const users = pgTable('users', {
   deletedAt: timestamp('deleted_at'),
 });
 
+// Define neighborhoods table
+export const neighborhoods = pgTable('neighborhoods', {
+  id: uuid('id').primaryKey().defaultRandom().notNull(),
+  name: varchar('name', { length: 100 }).notNull(),
+  city: varchar('city', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => {
+  return {
+    nameAndCityIndex: uniqueIndex('neighborhoods_name_city_idx').on(table.name, table.city)
+  };
+});
+
+// Define regions table
+export const regions = pgTable('regions', {
+  id: uuid('id').primaryKey().defaultRandom().notNull(),
+  name: varchar('name', { length: 100 }).notNull().unique(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// Define region_neighborhoods junction table
+export const regionNeighborhoods = pgTable('region_neighborhoods', {
+  regionId: uuid('region_id').notNull().references(() => regions.id, { onDelete: 'cascade' }),
+  neighborhoodId: uuid('neighborhood_id').notNull().references(() => neighborhoods.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => {
+  return {
+    pk: uniqueIndex('region_neighborhoods_pk').on(table.regionId, table.neighborhoodId)
+  };
+});
+
 // Export all schemas
 export const schema = {
   userTypes,
   users,
+  neighborhoods,
+  regions,
+  regionNeighborhoods,
 };

@@ -28,6 +28,7 @@ export default {
     user,
     password,
     database,
+    ssl: false, // Desabilitar SSL para permitir conexão com servidores que não suportam SSL
   },
   verbose: true,
   strict: true,

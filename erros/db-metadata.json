@@ -1,0 +1,7 @@
+[
+  {
+    "id": "schemas",
+    "sql": "SELECT\n  n.nspname as name\nFROM\n  pg_catalog.pg_namespace n\nWHERE\n  n.nspname NOT LIKE 'pg\\_%'\n  AND n.nspname != 'information_schema'\nORDER BY\n  n.nspname;",
+    "error": {}
+  }
+]

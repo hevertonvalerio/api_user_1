@@ -1,4 +1,6 @@
 import { body, param, query, ValidationChain } from 'express-validator';
+import { regionRepository } from '../repositories/RegionRepository';
+import { neighborhoodRepository } from '../repositories/NeighborhoodRepository';
 
 /**
  * Validation rules for creating a user
@@ -134,4 +136,193 @@ export const deleteUserValidation: ValidationChain[] = [
     .withMessage('User ID is required')
     .isUUID()
     .withMessage('Invalid user ID format'),
+];
+
+/**
+ * Validation rules for creating a neighborhood
+ */
+export const createNeighborhoodValidation: ValidationChain[] = [
+  body('name')
+    .notEmpty()
+    .withMessage('Name is required')
+    .isString()
+    .withMessage('Name must be a string')
+    .isLength({ max: 100 })
+    .withMessage('Name must be at most 100 characters'),
+  
+  body('city')
+    .notEmpty()
+    .withMessage('City is required')
+    .isString()
+    .withMessage('City must be a string')
+    .isLength({ max: 100 })
+    .withMessage('City must be at most 100 characters'),
+];
+
+/**
+ * Validation rules for creating multiple neighborhoods in batch
+ */
+export const createBatchNeighborhoodValidation: ValidationChain[] = [
+  body('city')
+    .notEmpty()
+    .withMessage('City is required')
+    .isString()
+    .withMessage('City must be a string')
+    .isLength({ max: 100 })
+    .withMessage('City must be at most 100 characters'),
+  
+  body('neighborhoods')
+    .notEmpty()
+    .withMessage('Neighborhoods are required')
+    .isArray()
+    .withMessage('Neighborhoods must be an array')
+    .custom((value) => {
+      if (!Array.isArray(value) || value.length === 0) {
+        throw new Error('Neighborhoods array must not be empty');
+      }
+      
+      for (const name of value) {
+        if (typeof name !== 'string' || name.trim() === '') {
+          throw new Error('All neighborhood names must be non-empty strings');
+        }
+        
+        if (name.length > 100) {
+          throw new Error('Neighborhood names must be at most 100 characters');
+        }
+      }
+      
+      return true;
+    }),
+];
+
+/**
+ * Validation rules for updating a neighborhood
+ */
+export const updateNeighborhoodValidation: ValidationChain[] = [
+  param('id')
+    .notEmpty()
+    .withMessage('Neighborhood ID is required')
+    .isUUID()
+    .withMessage('Invalid neighborhood ID format'),
+  
+  body('name')
+    .optional()
+    .isString()
+    .withMessage('Name must be a string')
+    .isLength({ max: 100 })
+    .withMessage('Name must be at most 100 characters'),
+  
+  body('city')
+    .optional()
+    .isString()
+    .withMessage('City must be a string')
+    .isLength({ max: 100 })
+    .withMessage('City must be at most 100 characters'),
+];
+
+/**
+ * Validation rules for creating a region
+ */
+export const createRegionValidation: ValidationChain[] = [
+  body('name')
+    .notEmpty()
+    .withMessage('Name is required')
+    .isString()
+    .withMessage('Name must be a string')
+    .isLength({ max: 100 })
+    .withMessage('Name must be at most 100 characters'),
+  
+  body('neighborhood_ids')
+    .optional()
+    .isArray()
+    .withMessage('Neighborhood IDs must be an array')
+    .custom(async (value) => {
+      if (Array.isArray(value) && value.length > 0) {
+        for (const id of value) {
+          if (typeof id !== 'string' || !id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+            throw new Error('All neighborhood IDs must be valid UUIDs');
+          }
+        }
+      }
+      
+      return true;
+    }),
+];
+
+/**
+ * Validation rules for updating a region
+ */
+export const updateRegionValidation: ValidationChain[] = [
+  param('id')
+    .notEmpty()
+    .withMessage('Region ID is required')
+    .isUUID()
+    .withMessage('Invalid region ID format'),
+  
+  body('name')
+    .optional()
+    .isString()
+    .withMessage('Name must be a string')
+    .isLength({ max: 100 })
+    .withMessage('Name must be at most 100 characters'),
+];
+
+/**
+ * Validation rules for updating region neighborhoods
+ */
+export const updateRegionNeighborhoodsValidation: ValidationChain[] = [
+  param('id')
+    .notEmpty()
+    .withMessage('Region ID is required')
+    .isUUID()
+    .withMessage('Invalid region ID format'),
+  
+  body('neighborhood_ids')
+    .notEmpty()
+    .withMessage('Neighborhood IDs are required')
+    .isArray()
+    .withMessage('Neighborhood IDs must be an array')
+    .custom(async (value) => {
+      if (!Array.isArray(value)) {
+        throw new Error('Neighborhood IDs must be an array');
+      }
+      
+      for (const id of value) {
+        if (typeof id !== 'string' || !id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+          throw new Error('All neighborhood IDs must be valid UUIDs');
+        }
+      }
+      
+      return true;
+    }),
+];
+
+/**
+ * Validation rules for adding neighborhoods to a region
+ */
+export const addRegionNeighborhoodsValidation: ValidationChain[] = [
+  param('id')
+    .notEmpty()
+    .withMessage('Region ID is required')
+    .isUUID()
+    .withMessage('Invalid region ID format'),
+  
+  body('neighborhood_ids')
+    .notEmpty()
+    .withMessage('Neighborhood IDs are required')
+    .isArray()
+    .withMessage('Neighborhood IDs must be an array')
+    .custom(async (value) => {
+      if (!Array.isArray(value) || value.length === 0) {
+        throw new Error('Neighborhood IDs array must not be empty');
+      }
+      
+      for (const id of value) {
+        if (typeof id !== 'string' || !id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+          throw new Error('All neighborhood IDs must be valid UUIDs');
+        }
+      }
+      
+      return true;
+    }),
 ];

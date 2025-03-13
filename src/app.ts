@@ -5,6 +5,8 @@ import { errorHandlerMiddleware, notFoundHandler } from './middlewares/ErrorHand
 import { loggerMiddleware } from './middlewares/LoggerMiddleware';
 import userRoutes from './routes/userRoutes';
 import userTypeRoutes from './routes/userTypeRoutes';
+import neighborhoodRoutes from './routes/neighborhoodRoutes';
+import regionRoutes from './routes/regionRoutes';
 import logger from './utils/logger';
 
 // Create Express app
@@ -18,6 +20,8 @@ app.use(loggerMiddleware);
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/user-types', userTypeRoutes);
+app.use('/api/neighborhoods', neighborhoodRoutes);
+app.use('/api/regions', regionRoutes);
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

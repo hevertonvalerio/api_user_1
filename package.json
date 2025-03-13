@@ -34,6 +34,7 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "@types/uuid": "^10.0.0",
+    "axios": "^1.8.3",
     "drizzle-kit": "^0.30.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"

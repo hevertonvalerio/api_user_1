@@ -1,0 +1,5 @@
+{
+  "message": "The server does not support SSL connections",
+  "stacktrace": "Error: The server does not support SSL connections\n    at T (https://local.drizzle.studio/index.js:19491:7153)\n    at async query (https://local.drizzle.studio/index.js:838:1655)\n    at async Promise.all (index 0)\n    at async PUt (https://local.drizzle.studio/index.js:692:44)\n    at async pull (https://local.drizzle.studio/index.js:838:2198)",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+}

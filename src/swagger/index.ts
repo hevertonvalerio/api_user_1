@@ -5,9 +5,9 @@ import { version } from '../../package.json';
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
-    title: 'User Management API',
+    title: 'Real Estate System API',
     version,
-    description: 'API for managing users in a real estate system',
+    description: 'API for managing users, regions, and neighborhoods in a real estate system',
     contact: {
       name: 'API Support',
       email: 'support@example.com',
@@ -232,6 +232,218 @@ const swaggerDefinition = {
           },
         },
       },
+      // Neighborhood schemas
+      Neighborhood: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            format: 'uuid',
+            description: 'Neighborhood ID',
+            example: '123e4567-e89b-12d3-a456-426614174000',
+          },
+          name: {
+            type: 'string',
+            description: 'Neighborhood name',
+            example: 'Downtown',
+          },
+          city: {
+            type: 'string',
+            description: 'City name',
+            example: 'New York',
+          },
+          createdAt: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Creation date',
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Last update date',
+          },
+        },
+      },
+      CreateNeighborhood: {
+        type: 'object',
+        required: ['name', 'city'],
+        properties: {
+          name: {
+            type: 'string',
+            description: 'Neighborhood name',
+            example: 'Downtown',
+          },
+          city: {
+            type: 'string',
+            description: 'City name',
+            example: 'New York',
+          },
+        },
+      },
+      CreateBatchNeighborhood: {
+        type: 'object',
+        required: ['city', 'neighborhoods'],
+        properties: {
+          city: {
+            type: 'string',
+            description: 'City name',
+            example: 'New York',
+          },
+          neighborhoods: {
+            type: 'array',
+            description: 'List of neighborhood names',
+            items: {
+              type: 'string',
+              example: 'Downtown',
+            },
+          },
+        },
+      },
+      UpdateNeighborhood: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string',
+            description: 'Neighborhood name',
+            example: 'Downtown',
+          },
+          city: {
+            type: 'string',
+            description: 'City name',
+            example: 'New York',
+          },
+        },
+      },
+      NeighborhoodUsage: {
+        type: 'object',
+        properties: {
+          isUsed: {
+            type: 'boolean',
+            description: 'Whether the neighborhood is being used',
+            example: true,
+          },
+          usedIn: {
+            type: 'array',
+            description: 'List of modules using the neighborhood',
+            items: {
+              type: 'string',
+              example: 'regions',
+            },
+          },
+        },
+      },
+      // Region schemas
+      Region: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            format: 'uuid',
+            description: 'Region ID',
+            example: '123e4567-e89b-12d3-a456-426614174000',
+          },
+          name: {
+            type: 'string',
+            description: 'Region name',
+            example: 'North Zone',
+          },
+          createdAt: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Creation date',
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Last update date',
+          },
+          neighborhoods: {
+            type: 'array',
+            description: 'List of neighborhoods in the region',
+            items: {
+              $ref: '#/components/schemas/Neighborhood',
+            },
+          },
+        },
+      },
+      CreateRegion: {
+        type: 'object',
+        required: ['name'],
+        properties: {
+          name: {
+            type: 'string',
+            description: 'Region name',
+            example: 'North Zone',
+          },
+          neighborhood_ids: {
+            type: 'array',
+            description: 'List of neighborhood IDs to associate with the region',
+            items: {
+              type: 'string',
+              format: 'uuid',
+              example: '123e4567-e89b-12d3-a456-426614174000',
+            },
+          },
+        },
+      },
+      UpdateRegion: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string',
+            description: 'Region name',
+            example: 'North Zone',
+          },
+        },
+      },
+      UpdateRegionNeighborhoods: {
+        type: 'object',
+        required: ['neighborhood_ids'],
+        properties: {
+          neighborhood_ids: {
+            type: 'array',
+            description: 'List of neighborhood IDs to associate with the region',
+            items: {
+              type: 'string',
+              format: 'uuid',
+              example: '123e4567-e89b-12d3-a456-426614174000',
+            },
+          },
+        },
+      },
+      AddNeighborhoods: {
+        type: 'object',
+        required: ['neighborhood_ids'],
+        properties: {
+          neighborhood_ids: {
+            type: 'array',
+            description: 'List of neighborhood IDs to add to the region',
+            items: {
+              type: 'string',
+              format: 'uuid',
+              example: '123e4567-e89b-12d3-a456-426614174000',
+            },
+          },
+        },
+      },
+      RegionUsage: {
+        type: 'object',
+        properties: {
+          isUsed: {
+            type: 'boolean',
+            description: 'Whether the region is being used',
+            example: false,
+          },
+          usedIn: {
+            type: 'array',
+            description: 'List of modules using the region',
+            items: {
+              type: 'string',
+              example: 'properties',
+            },
+          },
+        },
+      },
     },
     responses: {
       UnauthorizedError: {
@@ -246,6 +458,40 @@ const swaggerDefinition = {
               error: {
                 code: 'UNAUTHORIZED',
                 message: 'API key is required',
+              },
+            },
+          },
+        },
+      },
+      ConflictError: {
+        description: 'Conflict error',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/Error',
+            },
+            example: {
+              success: false,
+              error: {
+                code: 'CONFLICT',
+                message: 'Resource already exists',
+              },
+            },
+          },
+        },
+      },
+      ForbiddenError: {
+        description: 'Forbidden error',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/Error',
+            },
+            example: {
+              success: false,
+              error: {
+                code: 'FORBIDDEN',
+                message: 'Operation not allowed',
               },
             },
           },
