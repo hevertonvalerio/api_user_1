@@ -1,5 +1,33 @@
 import swaggerJSDoc from 'swagger-jsdoc';
-import { version } from '../../package.json';
+import fs from 'fs';
+import path from 'path';
+
+// Função para obter a versão do package.json de forma dinâmica
+// Isso funciona tanto em ambiente de desenvolvimento quanto em produção
+function getPackageVersion(): string {
+  try {
+    // Tentar o caminho relativo para desenvolvimento
+    const devPath = path.resolve(__dirname, '../../package.json');
+    if (fs.existsSync(devPath)) {
+      const packageJson = JSON.parse(fs.readFileSync(devPath, 'utf8'));
+      return packageJson.version;
+    }
+    
+    // Tentar o caminho relativo para produção
+    const prodPath = path.resolve(__dirname, '../package.json');
+    if (fs.existsSync(prodPath)) {
+      const packageJson = JSON.parse(fs.readFileSync(prodPath, 'utf8'));
+      return packageJson.version;
+    }
+    
+    return '1.0.0'; // Versão padrão se não conseguir encontrar
+  } catch (error) {
+    console.error('Erro ao ler a versão do package.json:', error);
+    return '1.0.0';
+  }
+}
+
+const version = getPackageVersion();
 
 /**
  * Definição completa do Swagger para a API do Sistema Imobiliário
@@ -8,7 +36,7 @@ import { version } from '../../package.json';
  */
 
 // Definições de schemas para o Swagger
-import { schemas } from './schemas';
+import schemas from './schemas';
 import { responses } from './responses';
 
 const swaggerDefinition = {
@@ -32,8 +60,12 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: '/api',
-      description: 'Servidor da API',
+      url: process.env.NODE_ENV === 'production'
+        ? process.env.API_BASE_URL || '/api'
+        : '/api',
+      description: process.env.NODE_ENV === 'production'
+        ? 'Servidor de Produção'
+        : 'Servidor de Desenvolvimento Local',
     },
   ],
   tags: [
@@ -88,11 +120,15 @@ const swaggerDefinition = {
 // Opções para o swagger-jsdoc
 const options = {
   swaggerDefinition,
-  apis: [__dirname + '/../routes/*.ts'],
+  apis: process.env.NODE_ENV === 'production'
+    ? [__dirname + '/../routes/*.js']  // Apenas JS em produção
+    : [__dirname + '/../routes/*.ts']  // Apenas TS em desenvolvimento
 };
 
 // Log dos caminhos sendo escaneados para definições OpenAPI
-console.log('Scanning for OpenAPI definitions in:', options.apis);
+const scanPath = process.env.NODE_ENV === 'production' ? '*.js' : '*.ts';
+console.log(`Environment: ${process.env.NODE_ENV}`);
+console.log(`Scanning for OpenAPI definitions: ${scanPath} files`);
 
 // Inicializar swagger-jsdoc
 const swaggerSpec = swaggerJSDoc(options);

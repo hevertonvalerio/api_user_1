@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  api:
+    image: manoelfg123/cadastro-usuario-api:latest
+    environment:
+      - NODE_ENV=production
+      - PORT=3100
+      - API_KEY=API_TESTES
+      - DATABASE_URL="postgresql://postgres:gZ33eBHvoNJAaXCd90SzYhZ1tehUT386MJe56PsfroixeVZeuk@vps.iaautomation.com.br:5432/users?schema=public"
+      - API_BASE_URL=/api
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.cadastro-usuarios.rule=Host(`cadastro-usuarios.iaautomation.com.br`)"
+        - "traefik.http.services.cadastro-usuarios.loadbalancer.server.port=3100"
+        - "traefik.http.routers.cadastro-usuarios.entrypoints=websecure"
+        - "traefik.http.routers.cadastro-usuarios.tls=true"
+        - "traefik.docker.network=traefik-public"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3100/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - network_public
+
+networks:
+  network_public:
+    name: network_public
+    external: true

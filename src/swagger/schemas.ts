@@ -821,7 +821,7 @@ const brokerProfileSchemas = {
 };
 
 // Exportar todos os schemas combinados
-export const schemas = {
+const schemas = {
   ...userTypeSchemas,
   ...userSchemas,
   ...neighborhoodSchemas,
@@ -829,3 +829,5 @@ export const schemas = {
   ...teamMemberSchemas,
   ...brokerProfileSchemas,
 };
+
+export default schemas;

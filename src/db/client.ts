@@ -6,6 +6,7 @@ import * as schema from './schema';
 // Create a PostgreSQL connection pool
 const pool = new Pool({
   connectionString: config.database.url,
+  ssl: false, // Desabilitar SSL para permitir conexão com servidores que não suportam SSL
 });
 
 // Create a Drizzle ORM instance with schema

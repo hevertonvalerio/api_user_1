@@ -10,6 +10,9 @@ API RESTful para gerenciamento de usuários em um sistema imobiliário, desenvol
 - Exclusão lógica de usuários
 - Consulta de usuários por ID, e-mail ou telefone
 - Listagem de tipos de usuário
+- Gerenciamento de regiões e bairros
+- Gerenciamento de equipes e membros
+- Gerenciamento de perfis de corretores
 
 ## Tecnologias Utilizadas
 
@@ -19,6 +22,7 @@ API RESTful para gerenciamento de usuários em um sistema imobiliário, desenvol
 - **Segurança**: Autenticação via API KEY e hash de senhas com bcrypt
 - **Documentação**: Swagger UI
 - **Logging**: Winston
+- **Containerização**: Docker e Docker Compose
 
 ## Estrutura do Projeto
 
@@ -38,6 +42,8 @@ O projeto segue a arquitetura MVC:
   /routes - Rotas da API
   app.ts - Configuração do Express
   server.ts - Inicialização do servidor
+/scripts - Scripts utilitários (publicação Docker, configuração de ambiente)
+/drizzle - Migrações do banco de dados
 ```
 
 ## Endpoints
@@ -58,8 +64,9 @@ O projeto segue a arquitetura MVC:
 
 - Node.js 18+
 - PostgreSQL 14+
+- Docker e Docker Compose (opcional, para execução em contêiner)
 
-## Instalação
+## Instalação e Execução Local
 
 1. Clone o repositório:
    ```bash
@@ -74,8 +81,17 @@ O projeto segue a arquitetura MVC:
 
 3. Configure as variáveis de ambiente:
    ```bash
+   # Linux/macOS
    cp .env.example .env
+   # Windows PowerShell
+   Copy-Item .env.example .env
    # Edite o arquivo .env com suas configurações
+   ```
+
+   Alternativamente, use o script de configuração de ambiente:
+   ```powershell
+   # Windows PowerShell
+   .\scripts\setup-env.ps1
    ```
 
 4. Execute as migrações do banco de dados:
@@ -90,8 +106,74 @@ O projeto segue a arquitetura MVC:
 
 6. Acesse a documentação Swagger:
    ```
-   http://localhost:3000/api-docs
+   http://localhost:3100/api-docs
    ```
+
+## Execução com Docker
+
+### Construindo e Executando Localmente
+
+1. Construa a imagem Docker:
+   ```bash
+   docker build -t cadastro-usuario-api .
+   ```
+
+2. Execute o contêiner:
+   ```bash
+   docker run -p 3100:3100 --env-file .env cadastro-usuario-api
+   ```
+
+### Usando Docker Compose
+
+1. Configure as variáveis de ambiente:
+   ```bash
+   # Linux/macOS
+   cp .env.example .env.docker
+   # Windows PowerShell
+   Copy-Item .env.example .env.docker
+   # Edite o arquivo .env.docker com suas configurações
+   ```
+
+2. Execute com Docker Compose:
+   ```bash
+   docker-compose up -d
+   ```
+
+### Publicação no Docker Hub
+
+Use os scripts fornecidos para publicar a imagem no Docker Hub:
+
+```bash
+# Linux/macOS
+chmod +x ./scripts/publish-docker.sh
+./scripts/publish-docker.sh
+
+# Windows PowerShell
+.\scripts\publish-docker.ps1
+```
+
+### Implantação com Docker Stack
+
+Para implantar em um ambiente Docker Swarm:
+
+```bash
+# Configurar as variáveis de ambiente
+export DOCKER_USERNAME=seu-usuario-docker-hub
+export API_KEY=sua-chave-api
+export DATABASE_URL=sua-url-banco-dados
+
+# Implantar o stack
+docker stack deploy -c docker-compose.yml cadastro-usuario
+```
+
+## Produção
+
+Para ambiente de produção, compile o código TypeScript:
+
+```bash
+npm run build
+npm start
+```
 
 ## Segurança
 
