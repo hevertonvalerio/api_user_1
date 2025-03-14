@@ -280,7 +280,7 @@ export class UserRepository {
       // First get the user
       const userResult = await db.select()
         .from(users)
-        .where(or(...conditions))
+        .where(and(...conditions))
         .limit(1);
       
       if (userResult.length === 0) {

@@ -9,6 +9,7 @@ import neighborhoodRoutes from './routes/neighborhoodRoutes';
 import regionRoutes from './routes/regionRoutes';
 import teamRoutes from './routes/teamRoutes';
 import memberRoutes from './routes/memberRoutes';
+import brokerProfileRoutes from './routes/brokerProfileRoutes';
 import logger from './utils/logger';
 
 // Create Express app
@@ -26,6 +27,7 @@ app.use('/api/neighborhoods', neighborhoodRoutes);
 app.use('/api/regions', regionRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/members', memberRoutes);
+app.use('/api/broker-profiles', brokerProfileRoutes);
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

@@ -1,10 +1,16 @@
-import { pgTable, uuid, varchar, timestamp, boolean, integer, pgEnum, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, boolean, integer, pgEnum, uniqueIndex, primaryKey } from 'drizzle-orm/pg-core';
 
 // Define user types enum
 export const userTypeEnum = pgEnum('user_type', ['Admin', 'Gerente', 'Corretor', 'Usuário']);
 
 // Define team types enum
 export const teamTypeEnum = pgEnum('team_type', ['Corretores', 'Cadastro', 'Jurídico', 'Atendimento', 'Administrativo']);
+
+// Define broker types enum
+export const brokerTypeEnum = pgEnum('broker_type', ['Locação', 'Venda', 'Híbrido']);
+
+// Define CRECI types enum
+export const creciTypeEnum = pgEnum('creci_type', ['Definitivo', 'Estagiário', 'Matrícula']);
 
 // Define user_types table
 export const userTypes = pgTable('user_types', {
@@ -81,6 +87,41 @@ export const members = pgTable('members', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// Define broker_profiles table
+export const brokerProfiles = pgTable('broker_profiles', {
+  id: uuid('id').primaryKey().defaultRandom().notNull(),
+  type: brokerTypeEnum('type').notNull(),
+  creci: varchar('creci', { length: 50 }).notNull(),
+  creciType: creciTypeEnum('creci_type').notNull(),
+  classification: integer('classification').default(0).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  deleted: boolean('deleted').default(false).notNull(),
+  deletedAt: timestamp('deleted_at'),
+});
+
+// Define broker_regions junction table
+export const brokerRegions = pgTable('broker_regions', {
+  brokerId: uuid('broker_id').notNull().references(() => brokerProfiles.id, { onDelete: 'cascade' }),
+  regionId: uuid('region_id').notNull().references(() => regions.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => {
+  return {
+    pk: primaryKey({ columns: [table.brokerId, table.regionId] })
+  };
+});
+
+// Define broker_neighborhoods junction table
+export const brokerNeighborhoods = pgTable('broker_neighborhoods', {
+  brokerId: uuid('broker_id').notNull().references(() => brokerProfiles.id, { onDelete: 'cascade' }),
+  neighborhoodId: uuid('neighborhood_id').notNull().references(() => neighborhoods.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => {
+  return {
+    pk: primaryKey({ columns: [table.brokerId, table.neighborhoodId] })
+  };
+});
+
 // Export all schemas
 export const schema = {
   userTypes,
@@ -90,4 +131,7 @@ export const schema = {
   regionNeighborhoods,
   teams,
   members,
+  brokerProfiles,
+  brokerRegions,
+  brokerNeighborhoods,
 };
