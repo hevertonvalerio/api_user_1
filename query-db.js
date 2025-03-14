@@ -19,42 +19,64 @@ async function queryDatabase() {
     
     console.log('Connected to the database');
     
-    // Check if the broker_profiles table exists
+    // Check if the users and user_types tables exist
     const tablesResult = await client.query(`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public' 
-      AND table_name IN ('broker_profiles', 'broker_regions', 'broker_neighborhoods')
+      AND table_name IN ('users', 'user_types')
     `);
     
     console.log('Tables found:');
     console.log(tablesResult.rows);
     
-    // Query the broker_profiles table
+    // Query the user_types table
     try {
-      const brokerProfilesResult = await client.query('SELECT * FROM broker_profiles');
-      console.log('\nBroker Profiles:');
-      console.log(brokerProfilesResult.rows);
+      const userTypesResult = await client.query('SELECT * FROM user_types');
+      console.log('\nUser Types:');
+      console.log(userTypesResult.rows);
     } catch (err) {
-      console.log('\nError querying broker_profiles table:', err.message);
+      console.log('\nError querying user_types table:', err.message);
     }
     
-    // Query the broker_regions table
+// Query the users table structure
     try {
-      const brokerRegionsResult = await client.query('SELECT * FROM broker_regions');
-      console.log('\nBroker Regions:');
-      console.log(brokerRegionsResult.rows);
+      const usersStructureResult = await client.query(`
+        SELECT column_name, data_type 
+        FROM information_schema.columns 
+        WHERE table_name = 'users'
+      `);
+      console.log('\nUsers table structure:');
+      console.log(usersStructureResult.rows);
+      
+      // Query the users table data
+      const usersResult = await client.query('SELECT * FROM users LIMIT 5');
+      console.log('\nUsers sample data:');
+      console.log(usersResult.rows);
     } catch (err) {
-      console.log('\nError querying broker_regions table:', err.message);
+      console.log('\nError querying users table:', err.message);
     }
     
-    // Query the broker_neighborhoods table
+// List all tables in the database
     try {
-      const brokerNeighborhoodsResult = await client.query('SELECT * FROM broker_neighborhoods');
-      console.log('\nBroker Neighborhoods:');
-      console.log(brokerNeighborhoodsResult.rows);
+      const allTablesResult = await client.query(`
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public'
+      `);
+      console.log('\nAll tables in database:');
+      console.log(allTablesResult.rows);
     } catch (err) {
-      console.log('\nError querying broker_neighborhoods table:', err.message);
+      console.log('\nError listing all tables:', err.message);
+    }
+    
+    // Get database name
+    try {
+      const dbNameResult = await client.query(`SELECT current_database()`);
+      console.log('\nCurrent database:');
+      console.log(dbNameResult.rows);
+    } catch (err) {
+      console.log('\nError getting database name:', err.message);
     }
     
     // Release the client

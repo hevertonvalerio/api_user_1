@@ -6,7 +6,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/user-types:
+ * /user-types:
  *   get:
  *     summary: Lista todos os tipos de usuário
  *     tags: [UserTypes]

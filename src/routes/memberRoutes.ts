@@ -12,7 +12,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/members:
+ * /members:
  *   post:
  *     summary: Cria um novo membro
  *     tags: [Members]
@@ -69,7 +69,7 @@ router.post(
 
 /**
  * @swagger
- * /api/members:
+ * /members:
  *   get:
  *     summary: Lista todos os membros
  *     tags: [Members]
@@ -116,7 +116,7 @@ router.get(
 
 /**
  * @swagger
- * /api/members/{id}:
+ * /members/{id}:
  *   get:
  *     summary: Busca um membro pelo ID
  *     tags: [Members]
@@ -151,7 +151,7 @@ router.get(
 
 /**
  * @swagger
- * /api/members/{id}:
+ * /members/{id}:
  *   put:
  *     summary: Atualiza um membro
  *     tags: [Members]
@@ -211,7 +211,7 @@ router.put(
 
 /**
  * @swagger
- * /api/members/{id}/status:
+ * /members/{id}/status:
  *   patch:
  *     summary: Atualiza o status de um membro
  *     tags: [Members]
@@ -257,7 +257,7 @@ router.patch(
 
 /**
  * @swagger
- * /api/members/{id}:
+ * /members/{id}:
  *   delete:
  *     summary: Exclui um membro
  *     tags: [Members]

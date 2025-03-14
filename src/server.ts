@@ -2,11 +2,11 @@ import app from './app';
 import { config } from './config';
 import logger from './utils/logger';
 
-// Get port from environment variables
-const PORT = config.server.port;
+// Define a porta para o servidor
+const PORT = 3004; // Alterado para a porta 3004
 
-// Start server
+// Iniciar o servidor
 app.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`);
-  logger.info(`Swagger documentation available at http://localhost:${PORT}/api-docs`);
+  logger.info(`Servidor rodando na porta ${PORT}`); // Mensagem de log atualizada
+  logger.info(`Documentação Swagger disponível em http://localhost:${PORT}/api-docs`); // Mensagem de log atualizada
 });

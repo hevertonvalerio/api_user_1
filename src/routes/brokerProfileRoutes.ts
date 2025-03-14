@@ -147,7 +147,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/broker-profiles:
+ * /broker-profiles:
  *   post:
  *     summary: Cria um novo perfil de corretor
  *     tags: [BrokerProfiles]
@@ -184,7 +184,7 @@ router.post('/', apiKeyMiddleware as any, brokerProfileController.createBrokerPr
 
 /**
  * @swagger
- * /api/broker-profiles/{id}:
+ * /broker-profiles/{id}:
  *   get:
  *     summary: Obtém um perfil de corretor pelo ID
  *     tags: [BrokerProfiles]
@@ -233,7 +233,7 @@ router.get('/:id', apiKeyMiddleware as any, brokerProfileController.getBrokerPro
 
 /**
  * @swagger
- * /api/broker-profiles:
+ * /broker-profiles:
  *   get:
  *     summary: Lista perfis de corretores com filtros opcionais
  *     tags: [BrokerProfiles]
@@ -322,7 +322,7 @@ router.get('/', apiKeyMiddleware as any, brokerProfileController.getBrokerProfil
 
 /**
  * @swagger
- * /api/broker-profiles/{id}:
+ * /broker-profiles/{id}:
  *   put:
  *     summary: Atualiza um perfil de corretor
  *     tags: [BrokerProfiles]
@@ -369,7 +369,7 @@ router.put('/:id', apiKeyMiddleware as any, brokerProfileController.updateBroker
 
 /**
  * @swagger
- * /api/broker-profiles/{id}:
+ * /broker-profiles/{id}:
  *   delete:
  *     summary: Realiza exclusão lógica de um perfil de corretor
  *     tags: [BrokerProfiles]
@@ -406,7 +406,7 @@ router.delete('/:id', apiKeyMiddleware as any, brokerProfileController.deleteBro
 
 /**
  * @swagger
- * /api/broker-profiles/{id}/restore:
+ * /broker-profiles/{id}/restore:
  *   post:
  *     summary: Restaura um perfil de corretor excluído logicamente
  *     tags: [BrokerProfiles]
@@ -443,7 +443,7 @@ router.post('/:id/restore', apiKeyMiddleware as any, brokerProfileController.res
 
 /**
  * @swagger
- * /api/broker-profiles/{id}/regions:
+ * /broker-profiles/{id}/regions:
  *   put:
  *     summary: Atualiza as regiões de atuação de um corretor
  *     tags: [BrokerProfiles]
@@ -488,7 +488,7 @@ router.put('/:id/regions', apiKeyMiddleware as any, brokerProfileController.upda
 
 /**
  * @swagger
- * /api/broker-profiles/{id}/regions:
+ * /broker-profiles/{id}/regions:
  *   post:
  *     summary: Adiciona regiões a um corretor
  *     tags: [BrokerProfiles]
@@ -533,7 +533,7 @@ router.post('/:id/regions', apiKeyMiddleware as any, brokerProfileController.add
 
 /**
  * @swagger
- * /api/broker-profiles/{id}/regions/{regionId}:
+ * /broker-profiles/{id}/regions/{regionId}:
  *   delete:
  *     summary: Remove uma região específica de um corretor
  *     tags: [BrokerProfiles]
@@ -579,7 +579,7 @@ router.delete('/:id/regions/:regionId', apiKeyMiddleware as any, brokerProfileCo
 
 /**
  * @swagger
- * /api/broker-profiles/{id}/regions:
+ * /broker-profiles/{id}/regions:
  *   get:
  *     summary: Lista todas as regiões de atuação de um corretor
  *     tags: [BrokerProfiles]
@@ -620,7 +620,7 @@ router.get('/:id/regions', apiKeyMiddleware as any, brokerProfileController.getB
 
 /**
  * @swagger
- * /api/broker-profiles/{id}/neighborhoods:
+ * /broker-profiles/{id}/neighborhoods:
  *   put:
  *     summary: Atualiza os bairros de atuação de um corretor
  *     tags: [BrokerProfiles]
@@ -665,7 +665,7 @@ router.put('/:id/neighborhoods', apiKeyMiddleware as any, brokerProfileControlle
 
 /**
  * @swagger
- * /api/broker-profiles/{id}/neighborhoods:
+ * /broker-profiles/{id}/neighborhoods:
  *   post:
  *     summary: Adiciona bairros a um corretor
  *     tags: [BrokerProfiles]
@@ -710,7 +710,7 @@ router.post('/:id/neighborhoods', apiKeyMiddleware as any, brokerProfileControll
 
 /**
  * @swagger
- * /api/broker-profiles/{id}/neighborhoods/{neighborhoodId}:
+ * /broker-profiles/{id}/neighborhoods/{neighborhoodId}:
  *   delete:
  *     summary: Remove um bairro específico de um corretor
  *     tags: [BrokerProfiles]
@@ -756,7 +756,7 @@ router.delete('/:id/neighborhoods/:neighborhoodId', apiKeyMiddleware as any, bro
 
 /**
  * @swagger
- * /api/broker-profiles/{id}/neighborhoods:
+ * /broker-profiles/{id}/neighborhoods:
  *   get:
  *     summary: Lista todos os bairros de atuação de um corretor
  *     tags: [BrokerProfiles]

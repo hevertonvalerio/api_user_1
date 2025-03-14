@@ -12,7 +12,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/teams:
+ * /teams:
  *   post:
  *     summary: Cria uma nova equipe
  *     tags: [Teams]
@@ -53,7 +53,7 @@ router.post(
 
 /**
  * @swagger
- * /api/teams:
+ * /teams:
  *   get:
  *     summary: Lista todas as equipes
  *     tags: [Teams]
@@ -90,7 +90,7 @@ router.get(
 
 /**
  * @swagger
- * /api/teams/{id}:
+ * /teams/{id}:
  *   get:
  *     summary: Busca uma equipe pelo ID
  *     tags: [Teams]
@@ -125,7 +125,7 @@ router.get(
 
 /**
  * @swagger
- * /api/teams/{id}:
+ * /teams/{id}:
  *   put:
  *     summary: Atualiza uma equipe
  *     tags: [Teams]
@@ -173,7 +173,7 @@ router.put(
 
 /**
  * @swagger
- * /api/teams/{id}/leader:
+ * /teams/{id}/leader:
  *   put:
  *     summary: Define um membro como líder da equipe
  *     tags: [Teams]
@@ -220,7 +220,7 @@ router.put(
 
 /**
  * @swagger
- * /api/teams/{id}:
+ * /teams/{id}:
  *   delete:
  *     summary: Exclui uma equipe
  *     tags: [Teams]
@@ -250,7 +250,7 @@ router.delete(
 
 /**
  * @swagger
- * /api/teams/{id}/members:
+ * /teams/{id}/members:
  *   get:
  *     summary: Lista os membros de uma equipe
  *     tags: [Teams]

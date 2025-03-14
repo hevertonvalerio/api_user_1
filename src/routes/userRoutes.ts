@@ -14,7 +14,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/users:
+ * /users:
  *   post:
  *     summary: Cria um novo usuário
  *     tags: [Users]
@@ -59,7 +59,7 @@ router.post(
 
 /**
  * @swagger
- * /api/users/{userId}:
+ * /users/{userId}:
  *   put:
  *     summary: Atualiza um usuário existente
  *     tags: [Users]
@@ -112,7 +112,7 @@ router.put(
 
 /**
  * @swagger
- * /api/users/{userId}/password:
+ * /users/{userId}/password:
  *   patch:
  *     summary: Altera a senha de um usuário
  *     tags: [Users]
@@ -165,7 +165,7 @@ router.patch(
 
 /**
  * @swagger
- * /api/users/{userId}:
+ * /users/{userId}:
  *   delete:
  *     summary: Remove um usuário (soft delete)
  *     tags: [Users]
@@ -210,7 +210,7 @@ router.delete(
 
 /**
  * @swagger
- * /api/users:
+ * /users:
  *   get:
  *     summary: Busca usuários por parâmetros
  *     tags: [Users]
