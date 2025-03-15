@@ -13,7 +13,7 @@ services:
       - API_BASE_URL=/api
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1
       update_config:
         parallelism: 1
         delay: 10s
@@ -33,7 +33,7 @@ services:
         - "traefik.http.services.cadastro-usuarios.loadbalancer.server.port=3100"
         - "traefik.http.routers.cadastro-usuarios.entrypoints=websecure"
         - "traefik.http.routers.cadastro-usuarios.tls=true"
-        - "traefik.http.routers.cadastro-usuarios.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.cadastro-usuarios.tls.certresolver=letsencryptresolver"
         - "traefik.http.middlewares.cadastro-usuarios-compress.compress=true"
         - "traefik.http.routers.cadastro-usuarios.middlewares=cadastro-usuarios-compress"
     healthcheck:

@@ -289,6 +289,10 @@ const swaggerDefinition = {
       url: 'http://localhost:3100',
       description: 'Servidor de Desenvolvimento',
     },
+    {
+      url: 'https://cadastro-usuarios.iaautomation.com.br',
+      description: 'Servidor de Produção',
+    },
   ],
   tags: [
     {
