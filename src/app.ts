@@ -1,52 +1,66 @@
-import express, { Express } from 'express';
+import express from 'express';
+import { config } from './config';
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './swagger/index.js';
-import { errorHandlerMiddleware, notFoundHandler } from './middlewares/ErrorHandlerMiddleware';
-import { loggerMiddleware } from './middlewares/LoggerMiddleware';
+import swaggerSpec from './swagger';
 import userRoutes from './routes/userRoutes';
-import userTypeRoutes from './routes/userTypeRoutes';
-import neighborhoodRoutes from './routes/neighborhoodRoutes';
 import regionRoutes from './routes/regionRoutes';
-import teamRoutes from './routes/teamRoutes';
-import memberRoutes from './routes/memberRoutes';
+import neighborhoodRoutes from './routes/neighborhoodRoutes';
 import brokerProfileRoutes from './routes/brokerProfileRoutes';
-import healthRoutes from './routes/healthRoutes';
 import logger from './utils/logger';
 
-// Tratamento de erros não capturados
-process.on('uncaughtException', (error) => {
-  logger.error('Uncaught Exception:', error);
+const app = express();
+
+// Middleware para logs de requisições
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.url}`);
+  next();
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
-
-// Create Express app
-const app: Express = express();
-
-// Middleware
+// Middleware para parsing de JSON
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(loggerMiddleware);
 
-// Routes
-app.use('/api/health', healthRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/user-types', userTypeRoutes);
-app.use('/api/neighborhoods', neighborhoodRoutes);
-app.use('/api/regions', regionRoutes);
-app.use('/api/teams', teamRoutes);
-app.use('/api/members', memberRoutes);
-app.use('/api/broker-profiles', brokerProfileRoutes);
+// Configuração da base URL da API
+const baseUrl = config.api.baseUrl || '/api';
 
-// Swagger documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Rota de verificação de saúde
+app.get(`${baseUrl}/health`, (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
-// 404 handler
-app.use(notFoundHandler);
+// Documentação Swagger em português
+const swaggerOptions = {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'API de Cadastro de Usuários',
+  customfavIcon: '/assets/favicon.ico',
+  swaggerOptions: {
+    defaultModelsExpandDepth: -1,
+    docExpansion: 'list',
+    filter: true,
+    displayRequestDuration: true,
+    syntaxHighlight: {
+      theme: 'monokai'
+    },
+    lang: 'pt-BR'
+  }
+};
 
-// Error handler
-app.use(errorHandlerMiddleware);
+// Rota da documentação Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerOptions));
+
+// Rotas da API
+app.use(`${baseUrl}/users`, userRoutes);
+app.use(`${baseUrl}/regions`, regionRoutes);
+app.use(`${baseUrl}/neighborhoods`, neighborhoodRoutes);
+app.use(`${baseUrl}/broker-profiles`, brokerProfileRoutes);
+
+// Middleware de tratamento de erros
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  logger.error('Erro não capturado:', err);
+  res.status(500).json({
+    success: false,
+    error: 'Erro interno do servidor',
+    message: err.message
+  });
+});
 
 export default app;

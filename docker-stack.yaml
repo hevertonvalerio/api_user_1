@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   api:
-    image: manoelfg123/cadastro-usuario-api:latest
+    image: manoelfg123/crm_oh_api_cadastro:latest
     environment:
       - NODE_ENV=production
       - PORT=3100

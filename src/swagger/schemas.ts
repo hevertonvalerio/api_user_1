@@ -685,30 +685,56 @@ const brokerProfileSchemas = {
       id: {
         type: 'string',
         format: 'uuid',
-        description: 'ID único do perfil de corretor (UUID)',
-        example: '123e4567-e89b-12d3-a456-426614174007',
+        description: 'ID único do perfil do corretor (UUID)',
+        example: '123e4567-e89b-12d3-a456-426614174000',
       },
-      type: {
+      name: {
         type: 'string',
-        enum: ['Locação', 'Venda', 'Híbrido'],
-        description: 'Tipo do corretor',
-        example: 'Híbrido',
+        description: 'Nome completo do corretor',
+        example: 'João Silva',
+        minLength: 3,
+        maxLength: 255,
+      },
+      email: {
+        type: 'string',
+        format: 'email',
+        description: 'Email do corretor (único no sistema)',
+        example: 'joao.silva@exemplo.com',
+        maxLength: 255,
+      },
+      phone: {
+        type: 'string',
+        description: 'Número de telefone do corretor',
+        example: '+5511987654321',
+        maxLength: 20,
       },
       creci: {
         type: 'string',
         description: 'Número do CRECI do corretor',
         example: '123456',
+        maxLength: 50,
       },
-      creciType: {
+      status: {
         type: 'string',
-        enum: ['Definitivo', 'Estagiário', 'Matrícula'],
-        description: 'Tipo do CRECI',
-        example: 'Definitivo',
+        enum: ['active', 'inactive', 'deleted'],
+        description: 'Status do corretor no sistema (ativo, inativo ou deletado)',
+        example: 'active',
       },
-      classification: {
-        type: 'integer',
-        description: 'Classificação do corretor (0-5)',
-        example: 5,
+      regions: {
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+        description: 'Lista de IDs das regiões de atuação do corretor',
+        example: ['123e4567-e89b-12d3-a456-426614174001'],
+      },
+      neighborhoods: {
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+        description: 'Lista de IDs dos bairros de atuação do corretor',
+        example: ['123e4567-e89b-12d3-a456-426614174002'],
       },
       createdAt: {
         type: 'string',
@@ -722,11 +748,6 @@ const brokerProfileSchemas = {
         description: 'Data e hora da última atualização do registro',
         example: '2025-03-14T12:30:00Z',
       },
-      deleted: {
-        type: 'boolean',
-        description: 'Indica se o perfil foi excluído (exclusão lógica)',
-        example: false,
-      },
       deletedAt: {
         type: 'string',
         format: 'date-time',
@@ -735,86 +756,118 @@ const brokerProfileSchemas = {
         nullable: true,
       },
     },
-    required: ['id', 'type', 'creci', 'creciType', 'createdAt', 'updatedAt', 'deleted'],
+    required: ['id', 'name', 'email', 'phone', 'creci', 'status', 'regions', 'neighborhoods', 'createdAt', 'updatedAt'],
   },
   CreateBrokerProfile: {
     type: 'object',
-    required: ['type', 'creci', 'creciType'],
+    required: ['name', 'email', 'phone', 'creci'],
     properties: {
-      type: {
+      name: {
         type: 'string',
-        enum: ['Locação', 'Venda', 'Híbrido'],
-        description: 'Tipo do corretor',
-        example: 'Híbrido',
+        description: 'Nome completo do corretor',
+        example: 'João Silva',
+        minLength: 3,
+        maxLength: 255,
+      },
+      email: {
+        type: 'string',
+        format: 'email',
+        description: 'Email do corretor (único no sistema)',
+        example: 'joao.silva@exemplo.com',
+        maxLength: 255,
+      },
+      phone: {
+        type: 'string',
+        description: 'Número de telefone do corretor',
+        example: '+5511987654321',
+        maxLength: 20,
       },
       creci: {
         type: 'string',
         description: 'Número do CRECI do corretor',
         example: '123456',
-        minLength: 1,
         maxLength: 50,
       },
-      creciType: {
-        type: 'string',
-        enum: ['Definitivo', 'Estagiário', 'Matrícula'],
-        description: 'Tipo do CRECI',
-        example: 'Definitivo',
-      },
-      classification: {
-        type: 'integer',
-        description: 'Classificação do corretor (0-5)',
-        example: 5,
-        minimum: 0,
-        maximum: 5,
-      },
-      region_ids: {
+      regions: {
         type: 'array',
-        description: 'Lista de IDs de regiões para associar ao corretor',
         items: {
           type: 'string',
-          format: 'uuid',
-          example: '123e4567-e89b-12d3-a456-426614174002',
         },
+        description: 'Lista de IDs das regiões de atuação do corretor',
+        example: ['123e4567-e89b-12d3-a456-426614174001'],
       },
-      neighborhood_ids: {
+      neighborhoods: {
         type: 'array',
-        description: 'Lista de IDs de bairros para associar ao corretor',
         items: {
           type: 'string',
-          format: 'uuid',
-          example: '123e4567-e89b-12d3-a456-426614174001',
         },
+        description: 'Lista de IDs dos bairros de atuação do corretor',
+        example: ['123e4567-e89b-12d3-a456-426614174002'],
       },
     },
   },
   UpdateBrokerProfile: {
     type: 'object',
     properties: {
-      type: {
+      name: {
         type: 'string',
-        enum: ['Locação', 'Venda', 'Híbrido'],
-        description: 'Tipo do corretor',
-        example: 'Venda',
+        description: 'Nome completo do corretor',
+        example: 'João Silva Atualizado',
+        minLength: 3,
+        maxLength: 255,
+      },
+      email: {
+        type: 'string',
+        format: 'email',
+        description: 'Email do corretor (único no sistema)',
+        example: 'joao.silva.atualizado@exemplo.com',
+        maxLength: 255,
+      },
+      phone: {
+        type: 'string',
+        description: 'Número de telefone do corretor',
+        example: '+5511987654322',
+        maxLength: 20,
       },
       creci: {
         type: 'string',
         description: 'Número do CRECI do corretor',
-        example: '654321',
-        minLength: 1,
+        example: '123457',
         maxLength: 50,
       },
-      creciType: {
+      status: {
         type: 'string',
-        enum: ['Definitivo', 'Estagiário', 'Matrícula'],
-        description: 'Tipo do CRECI',
-        example: 'Definitivo',
+        enum: ['active', 'inactive'],
+        description: 'Status do corretor no sistema (ativo ou inativo)',
+        example: 'active',
       },
-      classification: {
-        type: 'integer',
-        description: 'Classificação do corretor (0-5)',
-        example: 4,
-        minimum: 0,
-        maximum: 5,
+    },
+  },
+  UpdateBrokerRegions: {
+    type: 'object',
+    required: ['regions'],
+    properties: {
+      regions: {
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+        description: 'Nova lista de IDs das regiões de atuação do corretor',
+        example: ['123e4567-e89b-12d3-a456-426614174001'],
+      },
+    },
+  },
+  UpdateBrokerNeighborhoods: {
+    type: 'object',
+    required: ['neighborhoods'],
+    properties: {
+      neighborhoods: {
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+        description: 'Nova lista de IDs dos bairros de atuação do corretor',
+        example: ['123e4567-e89b-12d3-a456-426614174002'],
       },
     },
   },

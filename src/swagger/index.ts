@@ -1,136 +1,334 @@
 import swaggerJSDoc from 'swagger-jsdoc';
-import fs from 'fs';
-import path from 'path';
-
-// Função para obter a versão do package.json de forma dinâmica
-// Isso funciona tanto em ambiente de desenvolvimento quanto em produção
-function getPackageVersion(): string {
-  try {
-    // Tentar o caminho relativo para desenvolvimento
-    const devPath = path.resolve(__dirname, '../../package.json');
-    if (fs.existsSync(devPath)) {
-      const packageJson = JSON.parse(fs.readFileSync(devPath, 'utf8'));
-      return packageJson.version;
-    }
-    
-    // Tentar o caminho relativo para produção
-    const prodPath = path.resolve(__dirname, '../package.json');
-    if (fs.existsSync(prodPath)) {
-      const packageJson = JSON.parse(fs.readFileSync(prodPath, 'utf8'));
-      return packageJson.version;
-    }
-    
-    return '1.0.0'; // Versão padrão se não conseguir encontrar
-  } catch (error) {
-    console.error('Erro ao ler a versão do package.json:', error);
-    return '1.0.0';
-  }
-}
-
-const version = getPackageVersion();
-
-/**
- * Definição completa do Swagger para a API do Sistema Imobiliário
- * Este arquivo configura a documentação Swagger com definições detalhadas
- * de todos os endpoints, schemas, exemplos e respostas padronizadas.
- */
-
-// Definições de schemas para o Swagger
 import schemas from './schemas';
-import { responses } from './responses';
 
+// Rotas de Perfil de Corretor
+const brokerProfilePaths = {
+  '/broker-profiles': {
+    post: {
+      tags: ['Corretores'],
+      summary: 'Criar novo perfil de corretor',
+      description: 'Cria um novo perfil de corretor no sistema',
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/CreateBrokerProfile',
+            },
+          },
+        },
+      },
+      responses: {
+        201: {
+          description: 'Perfil de corretor criado com sucesso',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/BrokerProfile',
+              },
+            },
+          },
+        },
+        400: {
+          description: 'Dados inválidos fornecidos',
+        },
+        409: {
+          description: 'Email já cadastrado para outro corretor',
+        },
+        500: {
+          description: 'Erro interno do servidor',
+        },
+      },
+    },
+    get: {
+      tags: ['Corretores'],
+      summary: 'Listar perfis de corretor',
+      description: 'Retorna a lista de todos os perfis de corretor ativos',
+      responses: {
+        200: {
+          description: 'Lista de perfis de corretor recuperada com sucesso',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'array',
+                items: {
+                  $ref: '#/components/schemas/BrokerProfile',
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: 'Erro interno do servidor',
+        },
+      },
+    },
+  },
+  '/broker-profiles/{id}': {
+    get: {
+      tags: ['Corretores'],
+      summary: 'Buscar perfil de corretor por ID',
+      description: 'Retorna os detalhes de um perfil de corretor específico',
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          description: 'ID do perfil de corretor',
+          schema: {
+            type: 'string',
+            format: 'uuid',
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: 'Perfil de corretor encontrado com sucesso',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/BrokerProfile',
+              },
+            },
+          },
+        },
+        404: {
+          description: 'Perfil de corretor não encontrado',
+        },
+        500: {
+          description: 'Erro interno do servidor',
+        },
+      },
+    },
+    put: {
+      tags: ['Corretores'],
+      summary: 'Atualizar perfil de corretor',
+      description: 'Atualiza os dados de um perfil de corretor existente',
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          description: 'ID do perfil de corretor',
+          schema: {
+            type: 'string',
+            format: 'uuid',
+          },
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/UpdateBrokerProfile',
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: 'Perfil de corretor atualizado com sucesso',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/BrokerProfile',
+              },
+            },
+          },
+        },
+        400: {
+          description: 'Dados inválidos fornecidos',
+        },
+        404: {
+          description: 'Perfil de corretor não encontrado',
+        },
+        409: {
+          description: 'Email já cadastrado para outro corretor',
+        },
+        500: {
+          description: 'Erro interno do servidor',
+        },
+      },
+    },
+    delete: {
+      tags: ['Corretores'],
+      summary: 'Excluir perfil de corretor',
+      description: 'Realiza a exclusão lógica de um perfil de corretor',
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          description: 'ID do perfil de corretor',
+          schema: {
+            type: 'string',
+            format: 'uuid',
+          },
+        },
+      ],
+      responses: {
+        204: {
+          description: 'Perfil de corretor excluído com sucesso',
+        },
+        404: {
+          description: 'Perfil de corretor não encontrado',
+        },
+        500: {
+          description: 'Erro interno do servidor',
+        },
+      },
+    },
+  },
+  '/broker-profiles/{id}/regions': {
+    put: {
+      tags: ['Regiões'],
+      summary: 'Atualizar regiões do corretor',
+      description: 'Atualiza a lista de regiões de atuação do corretor',
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          description: 'ID do perfil de corretor',
+          schema: {
+            type: 'string',
+            format: 'uuid',
+          },
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/UpdateBrokerRegions',
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: 'Regiões atualizadas com sucesso',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/BrokerProfile',
+              },
+            },
+          },
+        },
+        404: {
+          description: 'Perfil de corretor não encontrado',
+        },
+        500: {
+          description: 'Erro interno do servidor',
+        },
+      },
+    },
+  },
+  '/broker-profiles/{id}/neighborhoods': {
+    put: {
+      tags: ['Bairros'],
+      summary: 'Atualizar bairros do corretor',
+      description: 'Atualiza a lista de bairros de atuação do corretor',
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          description: 'ID do perfil de corretor',
+          schema: {
+            type: 'string',
+            format: 'uuid',
+          },
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/UpdateBrokerNeighborhoods',
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: 'Bairros atualizados com sucesso',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/BrokerProfile',
+              },
+            },
+          },
+        },
+        404: {
+          description: 'Perfil de corretor não encontrado',
+        },
+        500: {
+          description: 'Erro interno do servidor',
+        },
+      },
+    },
+  },
+};
+
+// Definição base do Swagger
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
-    title: 'API do Sistema Imobiliário',
-    version,
-    description: `
-      API completa para gerenciamento de usuários, regiões, bairros, equipes e corretores em um sistema imobiliário.
-      Esta API fornece endpoints para todas as operações CRUD necessárias para o funcionamento do sistema.
-    `,
-    contact: {
-      name: 'Suporte API',
-      email: 'suporte@sistema-imobiliario.com',
-      url: 'https://sistema-imobiliario.com/suporte',
-    },
-    license: {
-      name: 'Proprietário',
-      url: 'https://sistema-imobiliario.com/licenca',
-    },
+    title: 'API de Cadastro de Usuários',
+    version: '1.0.0',
+    description: 'API para gerenciamento de usuários, corretores, regiões e bairros',
   },
   servers: [
     {
-      url: process.env.NODE_ENV === 'production'
-        ? process.env.API_BASE_URL || '/api'
-        : '/api',
-      description: process.env.NODE_ENV === 'production'
-        ? 'Servidor de Produção'
-        : 'Servidor de Desenvolvimento Local',
+      url: 'http://localhost:3100',
+      description: 'Servidor de Desenvolvimento',
     },
   ],
   tags: [
     {
-      name: 'Usuários',
-      description: 'Operações relacionadas a usuários do sistema',
+      name: 'Corretores',
+      description: 'Operações relacionadas a perfis de corretores',
     },
     {
-      name: 'Tipos de Usuário',
-      description: 'Operações relacionadas a tipos de usuário (Admin, Gerente, Corretor, etc.)',
+      name: 'Regiões',
+      description: 'Operações relacionadas a regiões',
     },
     {
       name: 'Bairros',
       description: 'Operações relacionadas a bairros',
     },
-    {
-      name: 'Regiões',
-      description: 'Operações relacionadas a regiões e suas associações com bairros',
-    },
-    {
-      name: 'Equipes',
-      description: 'Operações relacionadas a equipes',
-    },
-    {
-      name: 'Membros',
-      description: 'Operações relacionadas a membros de equipes',
-    },
-    {
-      name: 'Perfis de Corretor',
-      description: 'Operações relacionadas a perfis de corretores',
-    },
   ],
   components: {
+    schemas,
     securitySchemes: {
       ApiKeyAuth: {
         type: 'apiKey',
         in: 'header',
         name: 'X-API-KEY',
-        description: 'Chave de API para autenticação. Deve ser incluída em todas as requisições.',
+        description: 'Chave de API para autenticação',
       },
     },
-    schemas,
-    responses,
   },
   security: [
     {
       ApiKeyAuth: [],
     },
   ],
+  paths: {
+    ...brokerProfilePaths,
+  },
 };
 
 // Opções para o swagger-jsdoc
 const options = {
   swaggerDefinition,
-  apis: process.env.NODE_ENV === 'production'
-    ? [__dirname + '/../routes/*.js']  // Apenas JS em produção
-    : [__dirname + '/../routes/*.ts']  // Apenas TS em desenvolvimento
+  apis: ['./src/routes/*.ts'],
 };
 
-// Log dos caminhos sendo escaneados para definições OpenAPI
-const scanPath = process.env.NODE_ENV === 'production' ? '*.js' : '*.ts';
-console.log(`Environment: ${process.env.NODE_ENV}`);
-console.log(`Scanning for OpenAPI definitions: ${scanPath} files`);
-
-// Inicializar swagger-jsdoc
-const swaggerSpec = swaggerJSDoc(options);
-
-export default swaggerSpec;
+export default swaggerJSDoc(options);

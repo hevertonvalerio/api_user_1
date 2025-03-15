@@ -9,6 +9,9 @@ export const config = {
     port: process.env.PORT || 3100,
     nodeEnv: process.env.NODE_ENV || 'development',
   },
+  api: {
+    baseUrl: process.env.API_BASE_URL || '/api',
+  },
   security: {
     apiKey: process.env.API_KEY || 'default-api-key',
   },
